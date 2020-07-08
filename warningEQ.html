@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Warning EQ</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="card text-center">
+        <div class="card-header">
+            BMKG Early Warning (Gempa Bumi)
+        </div>
+        <div class="card-body">
+            <h5 class="card-title" id="tgl">Gempa Bumi Live Report<br></h5>
+            <img src="https://data.bmkg.go.id/eqmap.gif">
+
+            <br><br>
+
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Magnitudo</th>
+                    <td scope="col" id="magnitude"></td>
+                </tr>
+                <tr>
+                    <th scope="col">Kedalaman</th>
+                    <td scope="col" id="kedalaman"></td>
+                </tr>
+                <tr>
+                    <th scope="col">Koordinat</th>
+                    <td scope="col" id="koordinat"></td>
+                </tr>
+                </thead>
+            </table>
+
+            <table class="table" border="1">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">Wilayah</th>
+                    <th scope="col">Potensi</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id="wilayah" class="alert alert-primary" role="alert"></td>
+                    <td id="potensi" class="alert alert-warning" role="alert"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <a href="https://warning.bmkg.go.id" class="btn btn-info">Official Report</a>
+        </div>
+        <div id="tgl_footer" class="card-footer text-muted">
+            Updated At<br>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+<!--autogempa.xml-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: "http://data.bmkg.go.id/autogempa.xml",
+            cache: false,
+            dataType: "xml",
+            success: function(xml) {
+                $(xml).find('Infogempa').each(function(){
+                    $(xml).find('gempa').each(function(){
+                        var tgl = $(this).find("Tanggal").text();
+                        var jam = $(this).find("Jam").text();
+                        var wil1 = $(this).find("Wilayah1").text();
+                        var wil2 = $(this).find("Wilayah2").text();
+                        var wil3 = $(this).find("Wilayah3").text();
+                        var wil4 = $(this).find("Wilayah4").text();
+                        var wil5 = $(this).find("Wilayah5").text();
+                        var potensi = $(this).find("Potensi").text();
+                        var magnitude = $(this).find("Magnitude").text();
+                        var kedalaman = $(this).find("Kedalaman").text();
+                        var lintang = $(this).find("Lintang").text();
+                        var bujur = $(this).find("Bujur").text();
+
+                        $("#tgl").append("<b>"+tgl+" | "+jam+"</b>");
+                        $("#tgl_footer").append("<b>"+tgl+" | "+jam+"</b>");
+                        $("#wilayah").append(
+                            wil1+"<br>"+
+                            wil2+"<br>"+
+                            wil3+"<br>"+
+                            wil4+"<br>"+
+                            wil5+"<br>"
+                        );
+                        $("#potensi").append(potensi);
+                        $("#magnitude").append(magnitude);
+                        $("#kedalaman").append(kedalaman);
+                        $("#koordinat").append(lintang+" | "+bujur);
+                    });
+                });
+            }
+        });
+    });
+</script>
+
